@@ -35,8 +35,7 @@ class Rank(object):
 
 suits = [Suit("Hearts"), Suit("Clubs"), Suit("Diamonds"), Suit("Spades")]
 ranks = [
-	Rank("Ace", 1, 0, False, 'A'), Rank('2', 2), Rank('3', 3), Rank('4', 4), Rank('5', 5), Rank('6', 6), Rank('7', 7),
-	Rank('8', 8), Rank('9', 9), Rank('10', 10), Rank("Jack", 11, 0, True, 'J'), Rank("Queen", 11, 1, True, 'Q'), Rank("King", 11, 2, True, 'K')
+	Rank("Ace", 12, 0, False, 'A'), Rank('2', 2), Rank('3', 3), Rank('4', 4), Rank('5', 5), Rank('6', 6), Rank('7', 7), Rank('8', 8), Rank('9', 9), Rank('10', 10), Rank("Jack", 11, 0, True, 'J'), Rank("Queen", 11, 1, True, 'Q'), Rank("King", 11, 2, True, 'K')
 ]
 
 
