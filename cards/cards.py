@@ -53,7 +53,7 @@ class Card(object):
 		return self.rank.rank + " of " + self.suit.name
 
 	def __eq__(self, other):
-		return self.suit == other.suit and self.rank == other.rank
+		return self.rank == other.rank
 
 	def __gt__(self, other):
 		return self.rank > other.rank
