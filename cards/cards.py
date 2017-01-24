@@ -1,5 +1,5 @@
 # Cooper Anderson
-# Cards v0.1.3
+# Cards v0.1.5
 
 from copy import deepcopy
 import random
@@ -35,7 +35,7 @@ class Rank(object):
 
 suits = [Suit("Hearts"), Suit("Clubs"), Suit("Diamonds"), Suit("Spades")]
 ranks = [
-	Rank("Ace", 12, 0, False, 'A'), Rank('2', 2), Rank('3', 3), Rank('4', 4), Rank('5', 5), Rank('6', 6), Rank('7', 7), Rank('8', 8), Rank('9', 9), Rank('10', 10), Rank("Jack", 11, 0, True, 'J'), Rank("Queen", 11, 1, True, 'Q'), Rank("King", 11, 2, True, 'K')
+	Rank("Ace", 12, 0, False, 'A'), Rank('2', 2), Rank('3', 3), Rank('4', 4), Rank('5', 5), Rank('6', 6), Rank('7', 7), Rank('8', 8), Rank('9', 9), Rank('10', 10, 0, False, 'X'), Rank("Jack", 11, 0, True, 'J'), Rank("Queen", 11, 1, True, 'Q'), Rank("King", 11, 2, True, 'K')
 ]
 
 
@@ -50,6 +50,9 @@ class Card(object):
 
 	def get_name(self):
 		return self.rank.rank + " of " + self.suit.name
+
+	def get_abbr(self):
+		return self.rank.abbreviation + self.suit.name[0]
 
 	def __eq__(self, other):
 		return self.rank == other.rank
