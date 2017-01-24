@@ -1,5 +1,5 @@
 # Cooper Anderson
-# Cards v0.1.1
+# Cards v0.1.2
 
 from copy import deepcopy
 import random
@@ -44,9 +44,10 @@ class Card(object):
 	suits = suits
 	ranks = ranks
 
-	def __init__(self, suit=suits[0], rank=ranks[0]):
+	def __init__(self, suit=suits[0], rank=ranks[0], player=0):
 		self.suit = suit
 		self.rank = rank
+		self.player = player
 
 	def get_name(self):
 		return self.rank.rank + " of " + self.suit.name
@@ -70,8 +71,9 @@ cards = [Card(suit, rank) for suit in suits for rank in ranks]
 
 
 class Deck(object):
-	def __init__(self):
-		self.cards = deepcopy(cards)
+	def __init__(self, player=0):
+		self.cards = [Card(suit, rank, player) for suit in suits for rank in ranks]
+		self.player = player
 
 	def shuffle(self):
 		random.shuffle(self.cards)
