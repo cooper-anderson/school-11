@@ -1,5 +1,5 @@
 # Cooper Anderson
-# Cards v0.1.0
+# Cards v0.1.1
 
 from copy import deepcopy
 import random
@@ -85,3 +85,8 @@ class Deck(object):
 			for i in range(count):
 				popped.append(self.pop())
 			return popped
+
+	def cycle(self, count=1):
+		cycledCards = self.pop(count)
+		self.cards += cycledCards
+		return cycledCards
