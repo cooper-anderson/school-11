@@ -55,7 +55,8 @@ class Card(object):
 		return self.rank.abbreviation + self.suit.name[0]
 
 	def __eq__(self, other):
-		return self.rank == other.rank
+		try: return self.rank == other.rank
+		except AttributeError: return False
 
 	def __gt__(self, other):
 		return self.rank > other.rank
