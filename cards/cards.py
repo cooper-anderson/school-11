@@ -1,5 +1,5 @@
 # Cooper Anderson
-# Cards v0.1.5
+# Cards v0.1.6
 
 from copy import deepcopy
 import random
