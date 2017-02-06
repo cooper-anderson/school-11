@@ -1,5 +1,5 @@
 # Cooper Anderson
-# War v0.1.0-beta0
+# War v1.0.0
 
 from cards import Card, Deck
 import random, time
@@ -40,10 +40,13 @@ class War(object):
 		self.stack = []
 		self.warCount = warCount
 		self.war = 0
+		self.action = "play"
+		self.round = 0
 
 	def play(self):
 		if self.check_living:
 			if not self.war:
+				self.round += 1
 				self.cards = []
 				for p in self.currentPlayers:
 					self.cards.append(self.players[p].play_card())
@@ -80,15 +83,26 @@ class War(object):
 				self.stack += self.cards
 				self.cards = []
 				self.war = self.warCount - 1
+				self.action = "war"
 			else:
 				self.currentPlayers = [player.id for player in self.players]
 				self.players[self.cards[0].player].win_round(self.cards + self.stack)
 				self.cards = []
 				self.stack = []
+				self.action = "play"
 
-war = War(8)
-while False not in war.cards:
+war = War(input("Enter how many players are playing: "), input("Enter the amount of cards you should put down during a war: "))
+while True:
 	war.play()
-	print war.cards
-	print [player.card_count() for player in war.players]
+	if False in war.cards:
+		break
+	if war.action == "play":
+		print '-' * 16 + "ROUND " + str(war.round) + '-' * 16
+		print "".join(["Player " + str(card.player) + " played the " + str(card) + '\n' for card in war.cards])
+	if war.action == "war":
+		print ' ' * 16 + "WAR" + ' ' * 16
+		print ("".join(["Player " + str(player) + " plays a card face down" + '\n' for player in war.currentPlayers]) + '\n') * len(war.currentPlayers)
+	print "".join(["Player " + str(war.players[player].id) + " has " + str(war.players[player].card_count()) + " cards left.\n" for player in war.currentPlayers])
 	war.check_win()
+
+print "Game ended in " + str(war.round) + " rounds."
