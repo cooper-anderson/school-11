@@ -1,0 +1,85 @@
+# Cooper Anderson
+# Blackjack v0.1.0-beta0
+
+from __future__ import print_function
+from cards import Deck
+
+
+class Hand(Deck):
+	def __init__(self, id=0):
+		super(self.__class__, self).__init__(id, True)
+
+	def get_total(self):
+		self.cards += [self.cards.pop(i) for i, card in enumerate(self.cards) if card.rank == 12]
+		score = 0
+		for card in self.cards:
+			if card.rank == 11:
+				score += 10
+			elif card.rank == 12:
+				score += 11 if score < 11 else 1
+			else:
+				score += card.rank.rank
+		return score
+
+
+class Player(object):
+	def __init__(self, id=0):
+		self.id = id
+		self.hand = Hand(self.id)
+		self.score = 5000
+
+	def get_total(self):
+		return self.hand.get_total()
+
+
+class Blackjack(object):
+	def __init__(self):
+		self.deck = Deck(0)
+		self.deck.shuffle()
+		self.pile = Deck(0, True)
+		self.hand = Hand(0)
+		self.player = Player(1)
+		self.hide_card = True
+
+	def hand_card(self):
+		if not len(self.deck.cards):
+			self.deck = self.pile.shuffle()
+			self.pile = Deck(0, True)
+		return self.deck.pop()
+
+	def deal(self):
+		for i in range(2):
+			self.player.hand.cards.append(self.hand_card())
+			self.hand.cards.append(self.hand_card())
+
+	def round(self):
+		self.deal()
+		print("Dealer: (", end='')
+		if self.hide_card:
+			if self.hand.cards[0].rank.rank < 11:
+				print(self.hand.cards[0].rank, end='')
+			elif self.hand.cards[0].rank.rank < 12:
+				print(10, end='')
+			else:
+				print(11, end='')
+		else:
+			print(str(self.hand.get_total()),)
+		print(")")
+		if self.hide_card:
+			print("  " + str(self.hand.cards[0]) + "\n  ???\n")
+		else:
+			'\n'.join(["  " + str(card) for card in self.hand.cards]) + '\n'
+		print("Your hand: (" + str(self.player.get_total()) + ")\n" + '\n'.join(["  " + str(card) for card in self.player.hand.cards]) + '\n')
+
+	def play(self, entry):
+		if 'h' in entry.lower():
+			pass
+		elif 's' in entry.lower():
+			pass
+
+while True:
+	blackjack = Blackjack()
+	print('\n' * 100)
+	blackjack.round()
+	while True:
+		blackjack.play(raw_input("What would you like to do? (hit, stand): "))
