@@ -1,7 +1,14 @@
 # Cooper Anderson
-# Key Visualizer v0.1.1
+# Key Visualizer v0.1.2
 
-import pyglet, random
+import pyglet, random, sys
+
+from pyglet.gl import *
+from pyglet import font
+from pyglet import graphics
+from pyglet import window
+
+import particles
 
 window = pyglet.window.Window(resizable=True)
 letters = []
@@ -10,6 +17,7 @@ keyDelay = 0
 globalKeyDelay = 3
 space = False
 flickerColors = True
+particleCount = 10
 
 
 class Vector(object):
@@ -42,6 +50,9 @@ class Letter(object):
 		self.label = pyglet.text.Label(
 			ascii, font_name="Source Code Pro", font_size=self.scale, x=self.position.x, y=self.position.y, anchor_x="center", anchor_y="center"
 		)
+		if particleCount:
+			for i in range(particleCount):
+				particles.add_particles(window, -side)
 
 	def update(self):
 		self.position += self.velocity
@@ -68,7 +79,7 @@ class Letter(object):
 		self.label.draw()
 
 
-def update(value):
+def update(dt):
 	global keyDelay, globalKeyDelay
 	if not keyDelay:
 		keyDelay = sum(keys.values()) + globalKeyDelay
@@ -81,6 +92,7 @@ def update(value):
 		keyDelay -= 1
 	for letter in letters:
 		letter.update()
+	particles.update_particles(dt)
 
 
 @window.event
@@ -101,6 +113,7 @@ def on_key_release(symbol, modifiers):
 @window.event
 def on_draw():
 	window.clear()
+	particles.batch.draw()
 	for letter in letters:
 		letter.blit()
 
