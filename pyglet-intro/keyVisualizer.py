@@ -1,7 +1,15 @@
+# Cooper Anderson
+# Key Visualizer v0.1.1
+
 import pyglet, random
 
 window = pyglet.window.Window(resizable=True)
 letters = []
+keys = {}
+keyDelay = 0
+globalKeyDelay = 3
+space = False
+flickerColors = True
 
 
 class Vector(object):
@@ -29,7 +37,7 @@ class Letter(object):
 		self.angularVelocity = random.randint(15, 45) * random.choice([-1, 1])
 		self.scale = random.randint(max(12 * ratio, 12), max(68 * ratio, 68))
 		self.growth = random.randint(-ratio, ratio)
-		self.opacity = 255
+		self.color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), 255]
 		self.fade = random.randint(0, 5)
 		self.label = pyglet.text.Label(
 			ascii, font_name="Source Code Pro", font_size=self.scale, x=self.position.x, y=self.position.y, anchor_x="center", anchor_y="center"
@@ -44,28 +52,50 @@ class Letter(object):
 		if self.scale < 12:
 			self.scale = 12
 		self.growth *= .99
-		self.opacity -= self.fade
-		if self.opacity < 16:
-			self.opacity = 16
+		self.color[3] -= self.fade
+		if self.color[3] < 16:
+			self.color[3] = 16
+		if flickerColors:
+			self.color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), self.color[3]]
 		self.label.x = self.position.x
 		self.label.y = self.position.y
 		self.label.font_size = self.scale
-		self.label.color = (255, 255, 255, self.opacity)
+		self.label.color = self.color
 		if self.position.y < 0:
 			del letters[letters.index(self)]
 
 	def blit(self):
 		self.label.draw()
 
+
 def update(value):
+	global keyDelay, globalKeyDelay
+	if not keyDelay:
+		keyDelay = sum(keys.values()) + globalKeyDelay
+		if space:
+			letters.append(Letter(chr(random.randint(97, 122))))
+		for key in keys:
+			if keys[key]:
+				letters.append(Letter(key))
+	else:
+		keyDelay -= 1
 	for letter in letters:
 		letter.update()
 
 
 @window.event
 def on_key_press(symbol, modifiers):
-	if modifiers <= 1:
-		letters.append(Letter(chr(symbol)))
+	global space
+	if symbol == 32:
+		space = not space
+	elif symbol < 256:
+		keys[chr(symbol)] = True
+
+
+@window.event
+def on_key_release(symbol, modifiers):
+	if symbol < 256:
+		keys[chr(symbol)] = False
 
 
 @window.event
