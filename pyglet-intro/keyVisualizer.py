@@ -1,5 +1,5 @@
 # Cooper Anderson
-# Key Visualizer v0.1.2
+# Key Visualizer v0.1.3
 
 import pyglet, random, sys
 
@@ -16,8 +16,14 @@ keys = {}
 keyDelay = 0
 globalKeyDelay = 3
 space = False
-flickerColors = True
+useColors = False
+flickerColors = False
+useParticles = True
 particleCount = 10
+help = pyglet.text.Label("1: Toggle Colors\n2: Toggle Color Flicker\n3: Toggle Particles", font_name="Source Code Pro", x=0, y=window.height-24, anchor_x="left", multiline=True, width=window.width)
+showHelp = False
+message = pyglet.text.Label("Press keys or command", font_name="Source Code Pro", font_size=24, x=window.width//2, y=3*window.height//4, anchor_x="center", anchor_y="center")
+messages = ["Toggled Colors", "Toggled Color Flickering", "Toggled Particles"]
 
 
 class Vector(object):
@@ -45,12 +51,12 @@ class Letter(object):
 		self.angularVelocity = random.randint(15, 45) * random.choice([-1, 1])
 		self.scale = random.randint(max(12 * ratio, 12), max(68 * ratio, 68))
 		self.growth = random.randint(-ratio, ratio)
-		self.color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), 255]
+		self.color = [random.randint(0 if useColors else 255, 255), random.randint(0 if useColors else 255, 255), random.randint(0 if useColors else 255, 255), 255]
 		self.fade = random.randint(0, 5)
 		self.label = pyglet.text.Label(
 			ascii, font_name="Source Code Pro", font_size=self.scale, x=self.position.x, y=self.position.y, anchor_x="center", anchor_y="center"
 		)
-		if particleCount:
+		if useParticles and particleCount:
 			for i in range(particleCount):
 				particles.add_particles(window, -side)
 
@@ -66,7 +72,7 @@ class Letter(object):
 		self.color[3] -= self.fade
 		if self.color[3] < 16:
 			self.color[3] = 16
-		if flickerColors:
+		if flickerColors and useColors:
 			self.color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), self.color[3]]
 		self.label.x = self.position.x
 		self.label.y = self.position.y
@@ -97,8 +103,26 @@ def update(dt):
 
 @window.event
 def on_key_press(symbol, modifiers):
-	global space
-	if symbol == 32:
+	global space, showHelp, useColors, flickerColors, useParticles
+	if modifiers == 64 or modifiers == 2:
+		showHelp = True
+		number = symbol - 48
+		change = None
+		if number == 1:
+			useColors = not useColors
+			change = useColors
+		elif number == 2:
+			flickerColors = not flickerColors
+			change = flickerColors
+		elif number == 3:
+			useParticles = not useParticles
+			change = useParticles
+		if 0 < number <= len(messages):
+			message.text = messages[number - 1] + " to " + str(change)
+			message.color = (message.color[0], message.color[1], message.color[2], 255)
+			message.x = window.width // 2
+			message.y = 3 * window.height // 4
+	elif symbol == 32:
 		space = not space
 	elif symbol < 256:
 		keys[chr(symbol)] = True
@@ -106,6 +130,9 @@ def on_key_press(symbol, modifiers):
 
 @window.event
 def on_key_release(symbol, modifiers):
+	global showHelp
+	if symbol == 65517 or symbol == 65507:
+		showHelp = False
 	if symbol < 256:
 		keys[chr(symbol)] = False
 
@@ -113,6 +140,11 @@ def on_key_release(symbol, modifiers):
 @window.event
 def on_draw():
 	window.clear()
+	help.y = window.height - 24
+	if showHelp:
+		help.draw()
+	message.color = (message.color[0], message.color[1], message.color[2], max(message.color[3] - 5, 0))
+	message.draw()
 	particles.batch.draw()
 	for letter in letters:
 		letter.blit()
