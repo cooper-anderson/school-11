@@ -1,5 +1,5 @@
 # Cooper Anderson
-# Key Visualizer v0.1.3
+# Key Visualizer v0.1.4
 
 import pyglet, random, sys
 
@@ -16,8 +16,8 @@ keys = {}
 keyDelay = 0
 globalKeyDelay = 3
 space = False
-useColors = False
-flickerColors = False
+useColors = True
+flickerColors = True
 useParticles = True
 particleCount = 10
 help = pyglet.text.Label("1: Toggle Colors\n2: Toggle Color Flicker\n3: Toggle Particles", font_name="Source Code Pro", x=0, y=window.height-24, anchor_x="left", multiline=True, width=window.width)
