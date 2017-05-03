@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 from cards import Deck
+import pyglet
 
 
 class Hand(Deck):
@@ -77,9 +78,26 @@ class Blackjack(object):
 		elif 's' in entry.lower():
 			pass
 
-while True:
+window = pyglet.window.Window()
+title_text = pyglet.text.Label("Blackjack", x=275, y=450)
+dealer_text = pyglet.text.Label("Dealer Hand:", x=10, y=400)
+player_text = pyglet.text.Label("Player Hant:", x=10, y=250)
+instructions_text = pyglet.text.Label("Press H to hit / S to stand", x=255, y=50)
+
+@window.event
+def on_draw():
+	window.clear()
+	title_text.draw()
+	dealer_text.draw()
+	player_text.draw()
+	instructions_text.draw()
+
+pyglet.app.run()
+
+"""while True:
 	blackjack = Blackjack()
 	print('\n' * 100)
 	blackjack.round()
 	while True:
 		blackjack.play(raw_input("What would you like to do? (hit, stand): "))
+"""
