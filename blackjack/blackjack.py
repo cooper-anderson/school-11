@@ -3,7 +3,9 @@
 
 from __future__ import print_function
 from cards import Deck
+from collections import defaultdict
 import pyglet
+from pyglet.window import key
 
 
 class Hand(Deck):
@@ -81,8 +83,38 @@ class Blackjack(object):
 window = pyglet.window.Window()
 title_text = pyglet.text.Label("Blackjack", x=275, y=450)
 dealer_text = pyglet.text.Label("Dealer Hand:", x=10, y=400)
-player_text = pyglet.text.Label("Player Hant:", x=10, y=250)
+player_text = pyglet.text.Label("Player Hand:", x=10, y=250)
 instructions_text = pyglet.text.Label("Press H to hit / S to stand", x=255, y=50)
+keys = defaultdict(lambda: 0)
+blackjack = Blackjack()
+blackjack.deal()
+
+
+def draw_cards(cards=[], x=10, y=10, width=100):
+	for index, card in enumerate(cards):
+		card.draw(x + (width*index), y)
+
+
+@window.event
+def on_key_press(symbol, modifiers):
+	keys[symbol] = 2
+
+
+@window.event
+def on_key_release(symbol, modifiers):
+	keys[symbol] = 0
+
+
+def update_keys():
+	for index in keys:
+		keys[index] = 1 if keys[index] == 2 else keys[index]
+
+
+def update(dt):
+	if keys[key.H] == 2:
+		blackjack.player.hand.cards.append(blackjack.hand_card())
+	update_keys()
+
 
 @window.event
 def on_draw():
@@ -91,6 +123,10 @@ def on_draw():
 	dealer_text.draw()
 	player_text.draw()
 	instructions_text.draw()
+	draw_cards(blackjack.player.hand.cards, 10, 125)
+
+# pyglet.clock.schedule_once(start, 0)
+pyglet.clock.schedule(update)
 
 pyglet.app.run()
 
@@ -99,5 +135,4 @@ pyglet.app.run()
 	print('\n' * 100)
 	blackjack.round()
 	while True:
-		blackjack.play(raw_input("What would you like to do? (hit, stand): "))
-"""
+		blackjack.play(raw_input("What would you like to do? (hit, stand): "))"""

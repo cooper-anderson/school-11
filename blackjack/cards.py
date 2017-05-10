@@ -3,6 +3,7 @@
 
 from copy import deepcopy
 import random
+import pyglet.image as image
 
 
 class Suit(object):
@@ -48,7 +49,7 @@ class Rank(object):
 	def __repr__(self):
 		return str(self.rank)
 
-suits = [Suit("Hearts", 0), Suit("Diamonds", 1), Suit("Spades", 2), Suit("Clubs", 3)]
+suits = [Suit("Spades", 0), Suit("Hearts", 1), Suit("Clubs", 2), Suit("Diamonds", 3)]
 ranks = [
 	None,
 	None,
@@ -72,6 +73,10 @@ class Card(object):
 	def __init__(self, suit=0, rank=2):
 		self.suit = suits[suit]
 		self.rank = ranks[rank]
+		self.image = image.load("cards/" + str(self.rank) + "_of_" + str(self.suit) + ".png")
+
+	def draw(self, x=0, y=0, scale=1):
+		self.image.blit(x, y, 0)
 
 	def __eq__(self, other):
 		return True if self.rank == other.rank else False
